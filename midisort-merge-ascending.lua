@@ -135,16 +135,26 @@ printNotesArray(notes)
 
 function table.slice(table, start, stop)
 
-output = {};
-outputIdx = 1;
+  if start == nil then start = 1 end
+  if stop  == nil then stop = #table end
+  output = {};
+  outputIdx = 1;
 
-for i, item in ipairs(table) do
+  for i = 1, #table, 1 do
 
+    if i >= start and i < stop + 1 then
+      --reaper.ShowConsoleMsg(i)
+      output[outputIdx] = table[i]
+      outputIdx = 1 + outputIdx
+    end
+
+  end
+
+  return output
 
 end
 
+printNotesArray(table.slice(notes, 0, 8))
 
-end
 
-table.slice(notes ,0, 1)
 
