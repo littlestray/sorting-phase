@@ -15,54 +15,7 @@ Ascending
 
 ]]
 
-function getLower(a,b)
-  local i,j=1,1
-  return function() 
-    if not b[j] or a[i] and a[i]<b[j] then
-      i=i+1; return a[i-1]
-    else
-      j=j+1; return b[j-1]
-    end
-  end  
-end
- 
-function merge(a,b)
-  local res={}
-  for v in getLower(a,b) do res[#res+1]=v end
-  return res
-end
- 
-function mergesort(list)
-  if #list<=1 then return list end
-  local s=math.floor(#list/2)
-  return merge(mergesort{unpack(list,1,s)}, mergesort{unpack(list,s+1)})
-end
-
-reaper.ClearConsole();
-reaper.ShowConsoleMsg("Start midiSort1\n");
-reaper.ShowConsoleMsg("#0\n");
-
-reaper.Main_OnCommand(41295, 1);
-
-target = reaper.GetSelectedMediaItem(0, 0);
-if target == nil then reaper.ShowConsoleMsg("no item selected\n"); return end
-
-take   = reaper.GetTake(target, 0);
-if take == nil then reaper.ShowConsoleMsg("no take selected\n") return end
-
---retval, notecnt, ccevtcnt, textsyxevtcnt = reaper.MIDI_CountEvts(take);
---if notecnt == 0 then reaper.ShowConsoleMsg("no notes in take\n") return end
-
-reaper.MIDI_SelectAll(take, true);
-
-notes = {}
-workArray = {}
-
-length = 0
-listNote = 0
-while listNote >= 0
-  do
-    -- list_retval, list_selected, 
+   -- list_retval, list_selected, 
     -- list_muted, list_startppqpos, 
     -- list_endppqpos, list_chan, 
     -- list_pitch, list_vel = reaper.MIDI_GetNote(take,listNote)
@@ -77,21 +30,121 @@ while listNote >= 0
     .5 endppqpos (float) .6 chan (int) .7 pitch (int) .8 vel (int)
     ]]
 
-    list_vals = {reaper.MIDI_GetNote(take,listNote)}
-    notes[listNote] = list_vals;
+-- watchList = ""
+-- function getLower(a,b)
+--   local i,j=1,1
+--   return function() 
+--     if not b[j] or a[i] and a[i]<b[j] then
+--       i=i+1; return a[i-1]
+--     else
+--       j=j+1; return b[j-1]
+--     end
+--   end  
+-- end
+ 
+-- function merge(a,b)
+--   local res={}
+--   for v in getLower(a,b) do res[#res+1]=v end
+--   return res
+-- end
+
+-- mergeCounter = 0;
+
+-- function mergesort(list)
+  
+--   watchList = list
+  
+--   --counts mergesort calls
+  
+--   mergeCounter = mergeCounter+1
+  
+--   reaper.ShowConsoleMsg("\nmergesort call count:" .. tostring(mergeCounter))
+  
+--   --
+
+--   for i, line in ipairs(list) do
+--     reaper.ShowConsoleMsg(tostring(line))
+--   end
+--   reaper.ShowConsoleMsg("\nunpack??:" .. tostring(unpack(list[0])));
+
+--   if #list<=0 then return list end
+--   local s=math.floor(#list/2)
+--   return merge(mergesort(unpack(list,1,s)), mergesort(unpack(list,s+1)))
+-- end
+
+-----------------------------------------------------------------------FUNCTIONS
+
+function printNotesArray(notes)
+
+  for i,note in ipairs(notes) do
+
+    reaper.ShowConsoleMsg(i .. ": ")
+
+    for j, val in ipairs(note) do
+      
+      reaper.ShowConsoleMsg( "" .. tostring(val) .. ", ")
+      
+    end
     
-    --get next note returns -1 if not next note
-    listNote = reaper.MIDI_EnumSelNotes(take, listNote)
+    reaper.ShowConsoleMsg("\n")
+  end
+
+end
+
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+reaper.ClearConsole();
+reaper.ShowConsoleMsg("sorting-phase-merge\n");
+--reaper.ShowConsoleMsg("#0\n");
+
+-- copies the midiItem
+-- reaper.Main_OnCommand(41295, 1);
+
+target = reaper.GetSelectedMediaItem(0, 0);
+if target == nil then reaper.ShowConsoleMsg("no item selected\n"); return end
+
+take   = reaper.GetTake(target, 0);
+if take == nil then reaper.ShowConsoleMsg("no take selected\n") return end
+
+reaper.MIDI_SelectAll(take, true);
+
+
+
+--making an array of the notes to sort and paste into the midi item
+notes = {}
+listNoteIdx = 0
+
+while listNoteIdx > -1
+  do
+    --Adds Current Index to Array (Index starts at 1)
+    notes[listNoteIdx + 1] = {reaper.MIDI_GetNote(take,listNoteIdx)}
+    --Advances the iterator (listNoteIdx)
+    listNoteIdx = reaper.MIDI_EnumSelNotes(take, listNoteIdx)
     
     
 end
 
-reaper.ShowConsoleMsg(tostring(notes[0][1]))
+reaper.ShowConsoleMsg("\n")
 
-reaper.ShowConsoleMsg(tostring(#notes + 1))
+printNotesArray(notes)
 
-temp = mergesort(notes)
+function table.slice(table, start, stop)
 
-reaper.ShowConsoleMsg(temp)
+output = {};
+outputIdx = 1;
 
--- params (array, empty-work-array, array-length)
+for i, item in ipairs(table) do
+
+
+end
+
+
+end
+
+table.slice(notes ,0, 1)
+
