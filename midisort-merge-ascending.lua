@@ -50,27 +50,6 @@ Ascending
 
 -- mergeCounter = 0;
 
--- function mergesort(list)
-  
---   watchList = list
-  
---   --counts mergesort calls
-  
---   mergeCounter = mergeCounter+1
-  
---   reaper.ShowConsoleMsg("\nmergesort call count:" .. tostring(mergeCounter))
-  
---   --
-
---   for i, line in ipairs(list) do
---     reaper.ShowConsoleMsg(tostring(line))
---   end
---   reaper.ShowConsoleMsg("\nunpack??:" .. tostring(unpack(list[0])));
-
---   if #list<=0 then return list end
---   local s=math.floor(#list/2)
---   return merge(mergesort(unpack(list,1,s)), mergesort(unpack(list,s+1)))
--- end
 
 -----------------------------------------------------------------------FUNCTIONS
 
@@ -91,12 +70,28 @@ function printNotesArray(notes)
 
 end
 
+function table.slice(table, start, stop)
+
+  if start == nil then start = 1 end
+  if stop  == nil then stop = #table end
+  output = {};
+  outputIdx = 1;
+
+  for i = 1, #table, 1 do
+
+    if i >= start and i < stop + 1 then
+      --reaper.ShowConsoleMsg(i)
+      output[outputIdx] = table[i]
+      outputIdx = 1 + outputIdx
+    end
+
+  end
+
+  return output
+
+end
+
 --------------------------------------------------------------------------------
-
-
-
-
-
 
 reaper.ClearConsole();
 reaper.ShowConsoleMsg("sorting-phase-merge\n");
@@ -131,30 +126,20 @@ end
 
 reaper.ShowConsoleMsg("\n")
 
-printNotesArray(notes)
+--printNotesArray(table.slice(notes, 0, 8))
 
-function table.slice(table, start, stop)
+function mergesort(list)
+  
+ 
+  
+  
 
-  if start == nil then start = 1 end
-  if stop  == nil then stop = #table end
-  output = {};
-  outputIdx = 1;
-
-  for i = 1, #table, 1 do
-
-    if i >= start and i < stop + 1 then
-      --reaper.ShowConsoleMsg(i)
-      output[outputIdx] = table[i]
-      outputIdx = 1 + outputIdx
-    end
-
-  end
-
-  return output
+  if #list == 1 then printNotesArray(list) return list end
+  
+  local s=math.floor(#list/2)
+  return merge(mergesort(table.slice(list,1,s)), mergesort(table.slice(list,s+1)))
 
 end
 
-printNotesArray(table.slice(notes, 0, 8))
 
-
-
+mergesort(notes)
