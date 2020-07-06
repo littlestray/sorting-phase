@@ -30,7 +30,7 @@ Ascending
     .5 endppqpos (float) .6 chan (int) .7 pitch (int) .8 vel (int)
     ]]
 
--- watchList = ""
+
 -- function getLower(a,b)
 --   local i,j=1,1
 --   return function() 
@@ -41,12 +41,6 @@ Ascending
 --     end
 --   end  
 -- end
- 
--- function merge(a,b)
---   local res={}
---   for v in getLower(a,b) do res[#res+1]=v end
---   return res
--- end
 
 -- mergeCounter = 0;
 
@@ -54,10 +48,10 @@ Ascending
 -----------------------------------------------------------------------FUNCTIONS
 
 function printNotesArray(notes)
-
+  
   for i,note in ipairs(notes) do
-
-    reaper.ShowConsoleMsg(i .. ": ")
+  
+    reaper.ShowConsoleMsg("\n  " .. i .. ": ")
 
     for j, val in ipairs(note) do
       
@@ -74,13 +68,12 @@ function table.slice(table, start, stop)
 
   if start == nil then start = 1 end
   if stop  == nil then stop = #table end
-  output = {};
-  outputIdx = 1;
+  local output = {};
+  local outputIdx = 1;
 
   for i = 1, #table, 1 do
 
     if i >= start and i < stop + 1 then
-      --reaper.ShowConsoleMsg(i)
       output[outputIdx] = table[i]
       outputIdx = 1 + outputIdx
     end
@@ -90,6 +83,31 @@ function table.slice(table, start, stop)
   return output
 
 end
+
+function table.combine(a, b)
+
+  local output = {}
+  local outputIdx = 1;
+
+  for i = 1, #a, 1 do
+  
+    output[outputIdx] = a[i]
+    outputIdx = 1 + outputIdx
+  
+  end
+  
+  for i = 1, #b, 1 do
+  
+  output[outputIdx] = b[i]
+  outputIdx = 1 + outputIdx
+  
+  end
+  
+  return output
+
+
+end
+
 
 --------------------------------------------------------------------------------
 
@@ -114,13 +132,11 @@ reaper.MIDI_SelectAll(take, true);
 notes = {}
 listNoteIdx = 0
 
-while listNoteIdx > -1
-  do
+while listNoteIdx > -1 do
     --Adds Current Index to Array (Index starts at 1)
     notes[listNoteIdx + 1] = {reaper.MIDI_GetNote(take,listNoteIdx)}
     --Advances the iterator (listNoteIdx)
     listNoteIdx = reaper.MIDI_EnumSelNotes(take, listNoteIdx)
-    
     
 end
 
@@ -130,16 +146,23 @@ reaper.ShowConsoleMsg("\n")
 
 function mergesort(list)
   
- 
-  
-  
-
-  if #list == 1 then printNotesArray(list) return list end
-  
   local s=math.floor(#list/2)
-  return merge(mergesort(table.slice(list,1,s)), mergesort(table.slice(list,s+1)))
+  reaper.ShowConsoleMsg("mergesort -- size: " .. #list .. " s: " .. s .. " ")
 
+  if #list == 1 then  return list end
+  
+  return merge(mergesort(table.slice(list,1,s)), mergesort(table.slice(list,s+1)))
 end
 
+function merge(a,b)
+
+  
+  reaper.ShowConsoleMsg("\nA: ")
+  printNotesArray(a)
+  reaper.ShowConsoleMsg("\nB: ")
+  printNotesArray(b)
+  
+  return table.combine(a,b)
+end
 
 mergesort(notes)
