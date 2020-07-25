@@ -73,14 +73,16 @@ function breadCrumbsArray(a, b)
                                   -- LEFT IN FOR RECURSION TESTING
       for i = 1, #a, 1 do
       
-        breadCrumbs[breadCrumbsIdx] = a[i]
+        breadCrumbs[breadCrumbsIdx] = deepcopy(a[i])
+        --breadCrumbs[breadCrumbsIdx] = a[i]
         breadCrumbsIdx = 1 + breadCrumbsIdx
       
       end
       
       for i = 1, #b, 1 do
       
-      breadCrumbs[breadCrumbsIdx] = b[i]
+      breadCrumbs[breadCrumbsIdx] = deepcopy(b[i])
+      --breadCrumbs[breadCrumbsIdx] = b[i]
       breadCrumbsIdx = 1 + breadCrumbsIdx
       
       end
@@ -307,6 +309,29 @@ function notePositionCorrection(array)
     array[i][4] = startNote
     array[i][5] = endNote
 
+    end
+
+  return array
+end
+
+counter = 0
+
+function notePositionCorrectionDebug(array)
+    local offset = 0
+
+    reaper.ShowConsoleMsg(debug.traceback())
+
+    for i = 1, #array do
+    
+    --reaper.ShowConsoleMsg(offset)
+    local startNote = offset
+    local endNote   = (array[i][5] - array[i][4]) + offset
+    offset = (endNote - startNote) + offset
+    
+    array[i][4] = counter
+    array[i][5] = counter + 1
+    
+    counter = counter + 1
     end
 
   return array
