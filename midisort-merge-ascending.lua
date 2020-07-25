@@ -216,7 +216,7 @@ reaper.ShowConsoleMsg("sorting-phase-merge\n");
 --reaper.ShowConsoleMsg("#0\n");
 
 -- copies the midiItem
-reaper.Main_OnCommand(41295, 1);
+--reaper.Main_OnCommand(41295, 1);
 
 target = reaper.GetSelectedMediaItem(0, 0);
 if target == nil then reaper.ShowConsoleMsg("no item selected\n"); return end
@@ -348,3 +348,4 @@ reaper.ShowConsoleMsg("\n")
 
 reaper.ShowConsoleMsg("\n")
 printNotesArray(output)
+reaper.Main_OnCommand(41174, 1)
