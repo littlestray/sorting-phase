@@ -154,7 +154,7 @@ function table.combine(a, b)
         reaper.ShowConsoleMsg(i)
         reaper.ShowConsoleMsg(j)
 
-        if (i < (#a + 1) and j < (#b + 1) and a[i][7] > b[j][7]) then
+        if (i < (#a + 1) and j < (#b + 1) and a[i][7] >= b[j][7]) then
 
             output[outputIdx] = a[i]
             outputIdx = 1 + outputIdx
